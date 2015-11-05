@@ -1,0 +1,12 @@
+{
+  "name": "ReboundChat",
+  "version": "2.0.0",
+  "description": "An online opensource chat server",
+  "main": "server.js",
+  "author": "Aryan Jha",
+  "private": false,
+  "license": "MIT",
+  "dependencies": {
+    "express": "3.4.8"
+  }
+}
