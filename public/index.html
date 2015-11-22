@@ -6,6 +6,21 @@
   <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
+  <script>
+    function createAccount() {
+
+      desiredUsername = prompt("What is your desired username? \nThis will show up as your name when you send messages.");
+      desiredPassword = prompt("What is your desired password?");
+      socket=io();
+      socket.emit('new user account', desiredUsername, desiredPassword);
+      alert("Your account has been successfully created.");
+      refreshChoice = confirm("Refreshing page.");
+      if (refreshChoice == true) {
+        window.location=window.location;
+      }
+
+    }
+  </script>
   <ul class="pages">
     <li class="chat page">
       <div class="chatArea">
@@ -15,8 +30,10 @@
     </li>
     <li class="login page">
       <div class="form">
-        <h3 class="title">Give yourself a nickname.</h3>
-        <input class="usernameInput" type="text" maxlength="14" />
+        <h3 class="title">Log in or join as a guest.</h3>
+        <input class="usernameInput" type="text" maxlength="14" placeholder="username"/> <br>
+        <input class="usernameInput" id="pwdinput" type="password" placeholder="password"/>
+        <h6 style="color:dodgerblue" onclick="createAccount()">Don't have an account? Click here.</h6>
       </div>
     </li>
   </ul>

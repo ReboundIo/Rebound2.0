@@ -21,7 +21,7 @@ $(function() {
   var connected = false;
   var typing = false;
   var lastTypingTime;
-  var $currentInput = $usernameInput.focus();
+  var $currentInput
 
   var socket = io();
 
@@ -46,8 +46,10 @@ $(function() {
       $loginPage.off('click');
       $currentInput = $inputMessage.focus();
 
+      password = document.getElementById('pwdinput').value;
+
       // Tell the server your username
-      socket.emit('add user', username);
+      socket.emit('add user', username, password);
     }
   }
 
@@ -196,13 +198,18 @@ $(function() {
     return COLORS[index];
   }
 
+  function createAccount() {
+
+    desiredUsername = prompt("What is your desired username? \nThis will show up as your name when you send messages.");
+    desiredPassword = prompt("What is your desired password?");
+    socket.emit('new user account', desiredUsername, desiredPassword);
+
+  }
+
   // Keyboard events
 
   $window.keydown(function (event) {
     // Auto-focus the current input when a key is typed
-    if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-      $currentInput.focus();
-    }
     // When the client hits ENTER on their keyboard
     if (event.which === 13) {
       if (username) {
@@ -220,11 +227,6 @@ $(function() {
   });
 
   // Click events
-
-  // Focus input when clicking anywhere on login page
-  $loginPage.click(function () {
-    $currentInput.focus();
-  });
 
   // Focus input when clicking on the message input's border
   $inputMessage.click(function () {
@@ -272,4 +274,13 @@ $(function() {
   socket.on('stop typing', function (data) {
     removeChatTyping(data);
   });
+
+  socket.on('alert', function(alertMessage) {
+    alert(alertMessage);
+  });
+
+  socket.on('alertrefresh', function(alertMessage) {
+    alert(alertMessage);
+    window.location=window.location;
+  })
 });
