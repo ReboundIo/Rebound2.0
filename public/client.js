@@ -22,6 +22,8 @@ $(function() {
   var typing = false;
   var lastTypingTime;
   var $currentInput
+  var roomID = "1";
+  var currentRoster = [];
 
   var socket = io();
 
@@ -50,6 +52,7 @@ $(function() {
 
       // Tell the server your username
       socket.emit('add user', username, password);
+      socket.emit('join room', '1', username);
     }
   }
 
@@ -61,12 +64,20 @@ $(function() {
     // if there is a non-empty message and a socket connection
     if (message && connected) {
       $inputMessage.val('');
-      addChatMessage({
-        username: username,
-        message: message
-      });
       // tell server to execute 'new message' and send along one parameter
-      socket.emit('new message', message);
+      if (message.split(' ')[0] == "/room") {
+        socket.emit('leave room', roomID);
+        for (i = 0;i < currentRoster.length;i++) {
+          removeUserFromRoster(currentRoster[i]);
+        };
+        users = {};
+        currentRoster = [];
+        roomID = message.split(' ')[1];
+        socket.emit('join room', message.split(' ')[1], username);
+        log("You have joined room " + message.split(' ')[1] + ".");
+      } else {
+        socket.emit('new message', message, roomID);
+      }
     }
   }
 
@@ -206,6 +217,23 @@ $(function() {
 
   }
 
+  var userItems = {};
+
+  function addUserToRoster(username) {
+
+    var userItem = document.createElement('li');
+    userItem.innerHTML = username;
+    userRoster.appendChild(userItem);
+    userItems[username] = userItem;
+
+  }
+
+  function removeUserFromRoster(username) {
+
+    userRoster.removeChild(userItems[username]);
+
+  }
+
   // Keyboard events
 
   $window.keydown(function (event) {
@@ -240,7 +268,7 @@ $(function() {
     connected = true;
     // Display the welcome message
 
-    var message = "Welcome to Rebound 2. There's gonna be some new stuff, a lot of stuff is gone. For now, just try to live with it. It'll all come back soon.";
+    var message = "Welcome to Rebound 2. Type /help to view commands.";
     log(message, {
       prepend: true
     });
@@ -254,15 +282,17 @@ $(function() {
 
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', function (data) {
-    log(data.username + ' joined the room.');
+    log(data.username + ' connected to the server.');
     addParticipantsMessage(data);
+    addUserToRoster(data.username);
   });
 
   // Whenever the server emits 'user left', log it in the chat body
   socket.on('user left', function (data) {
-    log(data.username + ' left the room.');
+    log(data.username + ' disconnected from the server.');
     addParticipantsMessage(data);
     removeChatTyping(data);
+    removeUserFromRoster(data.username);
   });
 
   // Whenever the server emits 'typing', show the typing message
@@ -274,6 +304,18 @@ $(function() {
   socket.on('stop typing', function (data) {
     removeChatTyping(data);
   });
+
+  socket.on('send roster', function(rosterList) {
+    currentRoster = rosterList;
+    for (i = 0; i < rosterList.length; i++) {
+      addUserToRoster(rosterList[i]);
+    }
+  });
+
+  socket.on('user switch room', function(username) {
+    console.log()
+    removeUserFromRoster(username);
+  })
 
   socket.on('alert', function(alertMessage) {
     alert(alertMessage);

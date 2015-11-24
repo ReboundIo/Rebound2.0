@@ -79,7 +79,6 @@ ul {
 
 .login.page .usernameInput {
   font-size: 200%;
-  letter-spacing: 3px;
 }
 
 .login.page .title, .login.page .usernameInput {
@@ -107,7 +106,7 @@ ul {
   color: gray;
   font-size: 70%;
   margin: 5px;
-  text-align: center;
+  text-align: right;
 }
 
 /* Messages */
@@ -135,6 +134,15 @@ ul {
   overflow: hidden;
   padding-right: 15px;
   text-align: right;
+}
+
+#userRoster {
+  -webkit-transition: width 0.75s
+  transition: width 0.75s
+}
+
+#userRoster:hover {
+  width: 90%;
 }
 
 /* Input */
