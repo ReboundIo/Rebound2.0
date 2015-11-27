@@ -65,7 +65,24 @@ $(function() {
     if (message && connected) {
       $inputMessage.val('');
       // tell server to execute 'new message' and send along one parameter
-      if (message.split(' ')[0] == "/room") {
+      if (message == "/help") {
+        log("AVAILABLE COMMANDS:");
+        log("/theme - shows list of available themes");
+        log("/theme <themechoice> - changes theme");
+        log("/color - shows list of available colors");
+        log("/color <colorchoice> - changes your username color");
+        log("/pm <username> <message> - sends a private message to a user");
+      } else if (message.split(' ')[0] == "/pm") {
+        var privateMessageArray = message.split(' ');
+        privateMessageArray.splice(0, 1);
+        privateMessageArray.splice(0, 1);
+        privateMessageArray = privateMessageArray.join();
+        for (i=0;i<999;i++) { privateMessageArray.replace(',', ' ') };
+        socket.emit('send pm', username, message.split(' ')[1], privateMessageArray)
+        log("You sent " + message.split(' ')[1] + ": " + privateMessageArray);
+      } else if (message == "/color") {
+        log("The available colors are: maroon, red, orange, yellow, olive, green, purple, fuchsia, lime, teal, aqua, blue, navy, black, silver, gray, white.");
+      } else if (message.split(' ')[0] == "/room") {
         socket.emit('leave room', roomID);
         for (i = 0;i < currentRoster.length;i++) {
           removeUserFromRoster(currentRoster[i]);
@@ -88,10 +105,15 @@ $(function() {
             swapStyleSheet("styles/cozy.css");
           } else if (message.split(' ')[1] == "party") {
             swapStyleSheet("styles/party.css");
+            new Audio('./party.mp3').play();
           } else {
             log("\n");
             log("That theme doesn't exist.");
           }
+        } else if (message.split(' ')[0] == "/color") {
+          socket.emit('new message', message, roomID);
+        } else {
+          socket.emit('new message', message, roomID);
         }
       } else {
         socket.emit('new message', message, roomID);
@@ -125,7 +147,7 @@ $(function() {
       .css('color', 'dimgray')
     var $usernameDiv = $('<span class="username"/>')
       .text(data.username)
-      .css('color', getUsernameColor(data.username));
+      .css('color', data.color);
     var $messageBodyDiv = $('<span class="messageBody">')
       .text(data.message);
 
@@ -341,6 +363,14 @@ $(function() {
   socket.on('user switch room', function(usern) {
     removeUserFromRoster(usern);
   });
+
+  socket.on('log', function(message) {
+    log(message);
+  });
+
+  socket.on('receive pm', function(sender, message) {
+    log(sender + " sent you: " + message);
+  })
 
   socket.on('alert', function(alertMessage) {
     alert(alertMessage);

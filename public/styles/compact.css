@@ -1,5 +1,36 @@
 /* Fix user-agent */
 
+@keyframes colorRotate {
+    from {
+        color: rgb(255, 0, 0);
+        text-shadow: 0px 2px 8px rgb(255, 0, 0);
+    }
+    16.6% {
+        color: rgb(255, 0, 255);
+        text-shadow: 0px 2px 8px rgb(255, 0, 255);
+    }
+    33.3% {
+        color: rgb(0, 0, 255);
+        text-shadow: 0px 2px 8px rgb(0, 0, 255);
+    }
+    50% {
+        color: rgb(0, 255, 255);
+        text-shadow: 0px 2px 8px rgb(0, 255, 255);
+    }
+    66.6% {
+        color: rgb(0, 255, 0);
+        text-shadow: 0px 2px 8px rgb(0, 255, 0);
+    }
+    83.3% {
+        color: rgb(255, 255, 0);
+        text-shadow: 0px 2px 8px rgb(255, 255, 0);
+    }
+    to {
+        color: rgb(255, 0, 0);
+        text-shadow: 0px 2px 8px rgb(255, 0, 0);
+    }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -134,6 +165,10 @@ ul {
   overflow: hidden;
   padding-right: 15px;
   text-align: right;
+}
+
+.system {
+  animation: colorRotate 5s ease-in infinite;
 }
 
 @keyframes expand {

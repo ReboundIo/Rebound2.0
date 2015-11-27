@@ -10,6 +10,8 @@ var numUsers = 1;
 var addedUser;
 var usernames;
 
+var COLOR_NAMES = ['maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple', 'fuchsia', 'lime', 'teal', 'aqua', 'blue', 'navy', 'black', 'gray', 'silver', 'white'];
+
 var rooms = {}; // map from room name to room object
 var userList = {}; // class with users to user objects
 
@@ -42,6 +44,10 @@ User.prototype.switchRoom = function(room) {
   this.room = room;
 }
 
+function setColor(username, color) {
+  userList[username].socket.color = color;
+}
+
 // tell server to start listening for connections
 server.listen(port, function () {
   console.log("Server listening at port %d", port);
@@ -56,6 +62,7 @@ app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function (socket) {
   socket.user = new User(socket, 'Anonymous');
+  socket.color = 'dimgray';
 
   socket.on('change username', function (username) {
     socket.user.username = username;
@@ -78,12 +85,27 @@ io.on('connection', function (socket) {
     socket.emit('user switch room', username);
   });
 
+  socket.on('send pm', function(sender, recipient, message) {
+    userList[recipient].socket.emit('receive pm', sender, message);
+  })
+
   socket.on('new message', function (data, roomNum) {
-    // tell the client to add a new message
-    io.sockets.in(roomNum).emit('new message', {
-      username: socket.username,
-      message: data
-    });
+    if (data.length <= 1000) {
+
+      if (data.split(' ')[0] == "/color") {
+        var color = data.split(' ')[1].trim();
+        if (COLOR_NAMES.indexOf(color.toLowerCase()) > -1) {
+          setColor(socket.username, color.toLowerCase());
+          socket.emit('log', 'Your color has been changed to ' + color + '.');
+        }
+      } else {
+        io.sockets.in(roomNum).emit('new message', {
+          username: socket.username,
+          message: data,
+          color: socket.color
+        });
+      }
+    }
   });
 
 
