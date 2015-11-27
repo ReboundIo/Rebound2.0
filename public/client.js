@@ -72,6 +72,8 @@ $(function() {
         log("/color - shows list of available colors");
         log("/color <colorchoice> - changes your username color");
         log("/pm <username> <message> - sends a private message to a user");
+      } else if (message.split(' ')[0] == "/kick") {
+        socket.emit('kick request', username, message.split(' ')[1]);
       } else if (message.split(' ')[0] == "/pm") {
         var privateMessageArray = message.split(' ');
         privateMessageArray.splice(0, 1);
@@ -367,6 +369,10 @@ $(function() {
   socket.on('log', function(message) {
     log(message);
   });
+
+  socket.on('kick', function() {
+    alert("You have been kicked.");
+  })
 
   socket.on('receive pm', function(sender, message) {
     log(sender + " sent you: " + message);
