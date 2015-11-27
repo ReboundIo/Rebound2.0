@@ -6,8 +6,12 @@ var db = mongojs('mongodb://localhost:27017', ['accounts']);
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
+var numUsers = 1;
+var addedUser;
+var usernames;
 
 var rooms = {}; // map from room name to room object
+var userList = {}; // class with users to user objects
 
 function Room() {
   this.users = [];
@@ -21,14 +25,21 @@ Room.prototype.removeUser = function(user) {
 Room.prototype.getUserList = function() {
   usernames = [];
 
-  for (var i = 0; i < this.users.length; i++) {
-    usernames.push(this.users[i].username);
+  for (i = 0; i < this.users.length; i++) {
+    usernames.push(this.users[i]);
   }
+
+  return usernames;
 };
 
 function User(socket, username) {
   this.socket = socket;
   this.username = username;
+  this.room = "1";
+}
+
+User.prototype.switchRoom = function(room) {
+  this.room = room;
 }
 
 // tell server to start listening for connections
@@ -52,23 +63,18 @@ io.on('connection', function (socket) {
   });
 
   socket.on('join room', function (roomName, username) {
-    if (roomCounts[roomN] == undefined || 0) {
-      roomCounts[roomN] = 0;
+    if (rooms[roomName] == undefined) {
+      rooms[roomName] = new Room();
     };
-    if (roomRosters[roomN] == undefined) {
-      roomRosters[roomN] = [];
-    };
-    roomRosters[roomN].push(username);
-    roomCounts = roomCounts + 1;
-    userTracker[username] = roomN;
-    socket.emit('send roster', roomRosters[roomN]);
+    rooms[roomName].addUser(username);
+    userList[username] = new User(socket, username);
+    socket.join(roomName);
+    socket.emit('send roster', rooms[roomName].getUserList());
   });
 
-  socket.on('leave room', function(roomN, username) {
-    roomRosters[roomN].splice(roomRosters[roomN].indexOf(username), 1);
-    roomCounts[roomN] = roomCounts - 1;
-    userTracker[username] = undefined;
-    socket.leave(roomN);
+  socket.on('leave room', function(roomName, username) {
+    rooms[roomName].removeUser(username);
+    socket.leave(roomName);
     socket.emit('user switch room', username);
   });
 
@@ -88,7 +94,6 @@ io.on('connection', function (socket) {
         // store the username in the socket session for this client
         socket.username = username;
         // add client's username to global listen
-        usernames[username] = username;
         ++numUsers;
         addedUser = true;
         socket.emit('login', {
@@ -111,7 +116,9 @@ io.on('connection', function (socket) {
     db.accounts.findOne({ "username" : username }, function(err, docs) {
 
       if (docs) {
-        socket.emit('alertrefresh', 'That username is taken. Try again.');
+        socket.emit('alertrefresh', 'ACCOUNT CREATION CANCELED: That username is taken. Try again.');
+      } else if (username.split('').indexOf('<') != -1) {
+        socket.emit('alertrefresh', "ACCOUNT CREATION CANCELED: The '<' character is not allowed.");
       } else {
         db.accounts.save({ "username" : username, "password" : password });
       }
@@ -134,20 +141,16 @@ io.on('connection', function (socket) {
 
   // when someone disconnects, do this
   socket.on('disconnect', function () {
-    // remove username from global usernames listen
 
     if (addedUser) {
-      delete usernames[socket.username];
       --numUsers;
+      rooms[socket.user.room].removeUser(socket.username);
 
       // echo to all other clients that someone left
       socket.broadcast.emit('user left', {
         username: socket.username,
         numUsers: numUsers
       });
-    }
-    if (userTracker[socket.username] != undefined) {
-      roomRosters[userTracker[socket.username]].splice(socket.username, 1);
     }
   });
 

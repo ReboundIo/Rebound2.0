@@ -136,13 +136,39 @@ ul {
   text-align: right;
 }
 
-#userRoster {
-  -webkit-transition: width 0.75s
-  transition: width 0.75s
+@keyframes expand {
+  from {
+    width: 0%;
+    background-color: #005959;
+  }
+  to {
+    width: 15%;
+    background-color: #bc39be;
+  }
 }
 
-#userRoster:hover {
-  width: 90%;
+#userRoster {
+  animation-name: expand;
+  animation-duration: 1s;
+
+  float: right;
+  border-left: 4px solid dodgerblue;
+  background-color: #bc39be;
+  height: 100%;
+}
+
+#roomSelect {
+  animation-name: expand;
+  animation-duration: 1s;
+
+  float: left;
+  border-right: 4px solid dodgerblue;
+  background-color: #bc39be;
+  height: 100%;
+}
+
+h3 {
+  margin-right: 55px;
 }
 
 /* Input */

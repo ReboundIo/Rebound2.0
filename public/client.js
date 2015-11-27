@@ -32,7 +32,7 @@ $(function() {
     if (data.numUsers === 1) {
       message += "There is 1 user connected.";
     } else {
-      message += "There are " + data.numUsers + " users connected.";
+
     }
     log(message);
   }
@@ -71,10 +71,28 @@ $(function() {
           removeUserFromRoster(currentRoster[i]);
         };
         users = {};
-        currentRoster = [];
         roomID = message.split(' ')[1];
         socket.emit('join room', message.split(' ')[1], username);
         log("You have joined room " + message.split(' ')[1] + ".");
+      } else if (message == "/theme") {
+        log("\n");
+        log("THEME CHOICES:");
+        log("note: compact is the default theme");
+        log("compact");
+        log("cozy");
+      } else if (message.split(' ').length == 2) {
+        if (message.split(' ')[0] == "/theme") {
+          if (message.split(' ')[1] == "compact") {
+            swapStyleSheet("styles/compact.css");
+          } else if (message.split(' ')[1] == "cozy") {
+            swapStyleSheet("styles/cozy.css");
+          } else if (message.split(' ')[1] == "party") {
+            swapStyleSheet("styles/party.css");
+          } else {
+            log("\n");
+            log("That theme doesn't exist.");
+          }
+        }
       } else {
         socket.emit('new message', message, roomID);
       }
@@ -225,13 +243,21 @@ $(function() {
     userItem.innerHTML = username;
     userRoster.appendChild(userItem);
     userItems[username] = userItem;
+    currentRoster.push(username);
 
   }
 
   function removeUserFromRoster(username) {
 
-    userRoster.removeChild(userItems[username]);
+    if (userItems[username] != undefined || null) {
+      userRoster.removeChild(userItems[username]);
+      currentRoster.splice(currentRoster.indexOf(username), 1);
+    }
 
+  }
+
+  function swapStyleSheet(sheet) {
+    document.getElementById('pagestyle').setAttribute('href', sheet);
   }
 
   // Keyboard events
@@ -306,16 +332,15 @@ $(function() {
   });
 
   socket.on('send roster', function(rosterList) {
-    currentRoster = rosterList;
+    console.log(rosterList);
     for (i = 0; i < rosterList.length; i++) {
       addUserToRoster(rosterList[i]);
     }
   });
 
-  socket.on('user switch room', function(username) {
-    console.log()
-    removeUserFromRoster(username);
-  })
+  socket.on('user switch room', function(usern) {
+    removeUserFromRoster(usern);
+  });
 
   socket.on('alert', function(alertMessage) {
     alert(alertMessage);
@@ -324,5 +349,5 @@ $(function() {
   socket.on('alertrefresh', function(alertMessage) {
     alert(alertMessage);
     window.location=window.location;
-  })
+  });
 });
