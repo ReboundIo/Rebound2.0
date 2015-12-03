@@ -24,7 +24,7 @@ if (!fs.existsSync('config.json')) {
 
     config = {
         port: 3000,
-        keys: [],
+        admins: [],
         messageLimitWindow: 5,
         messageLimit: 5
     };
@@ -59,7 +59,7 @@ function loadConfiguration(callback) {
             }
 
             else {
-                config.keys.push(result.password);
+                config.admins.push(result.password);
                 console.log('Added admin. Logging in with this username will grant admin privileges.');
                 saveConfiguration(function() {
                     callback();
@@ -196,7 +196,6 @@ function startServer() {
 
           if (config.admins.indexOf(username) > -1) {
             userList[username].privileges = "admin";
-            console.log(userList[username].privileges);
           } else {
             userList[username].privileges = "user";
           }
