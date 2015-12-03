@@ -269,7 +269,7 @@ h3 {
 /* Input */
 
 .inputMessage {
-  animation: danceFly 10s ease-in infinite;
+  /*animation: danceFly 10s ease-in infinite;*/
 
   border: 1px solid #008080;
   bottom: 0;
