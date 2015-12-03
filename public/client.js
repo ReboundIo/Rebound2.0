@@ -108,6 +108,8 @@ $(function() {
           } else if (message.split(' ')[1] == "party") {
             swapStyleSheet("styles/party.css");
             new Audio('./party.mp3').play();
+          } else if (message.split(' ')[1] == "fire") {
+            swapStyleSheet("styles/fire.css");
           } else {
             log("\n");
             log("That theme doesn't exist.");
