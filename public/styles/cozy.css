@@ -183,38 +183,44 @@ ul {
 }
 
 #userRoster {
-  animation-name: contract;
-  animation-duration: 1s;
+  /**animation-name: contract;
+  animation-duration: 1s;**/
 
   position: absolute;
-  right: 95%;
+  left: 95%;
   top: 0;
   float: right;
   border-left: 4px solid dodgerblue;
   background-color: #005959;
   height: 100%;
   z-index: 100;
+
+  -webkit-transition: right 1s;
+  transition: right 1s;
 }
 
 #userRoster:hover {
-  right: 90%;
+  left: 90%;
 }
 
 #roomSelect {
-  animation-name: contract;
-  animation-duration: 1s;
+  /**animation-name: contract;
+  animation-duration: 1s;**/
 
   position: absolute;
-  left: 95%;
+  right: 95%;
   top: 0;
   float: left;
   border-right: 4px solid dodgerblue;
   background-color: #005959;
   height: 100%;
+
+  -webkit-transition: right 1s;
+  transition: right 1s;
 }
 
 #roomSelect:hover {
-  left: 90%;
+  right: 90%;
 }
 
 /* Input */
