@@ -186,24 +186,27 @@ ul {
   animation-name: contract;
   animation-duration: 1s;
 
+  position: absolute;
+  right: 95%;
+  top: 0;
   float: right;
   border-left: 4px solid dodgerblue;
   background-color: #005959;
   height: 100%;
   z-index: 100;
-
-  -webkit-transition: width 1s;
-  transition: width 1s;
 }
 
 #userRoster:hover {
-  width: 50%;
+  right: 90%;
 }
 
 #roomSelect {
   animation-name: contract;
   animation-duration: 1s;
 
+  position: absolute;
+  left: 95%;
+  top: 0;
   float: left;
   border-right: 4px solid dodgerblue;
   background-color: #005959;
@@ -211,7 +214,7 @@ ul {
 }
 
 #roomSelect:hover {
-  width: 50%;
+  left: 90%;
 }
 
 /* Input */
