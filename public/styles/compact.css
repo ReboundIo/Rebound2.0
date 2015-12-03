@@ -185,7 +185,7 @@ ul {
 #userRoster {
   animation-name: expand;
   animation-duration: 1s;
-
+  color: cyan;
   float: right;
   border-left: 4px solid dodgerblue;
   background-color: black;
@@ -195,7 +195,7 @@ ul {
 #roomSelect {
   animation-name: expand;
   animation-duration: 1s;
-
+  color: cyan;
   float: left;
   border-right: 4px solid dodgerblue;
   background-color: black;
