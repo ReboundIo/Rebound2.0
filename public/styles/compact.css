@@ -188,7 +188,7 @@ ul {
 
   float: right;
   border-left: 4px solid dodgerblue;
-  background-color: #bc39be;
+  background-color: black;
   height: 100%;
 }
 
@@ -198,7 +198,7 @@ ul {
 
   float: left;
   border-right: 4px solid dodgerblue;
-  background-color: #bc39be;
+  background-color: black;
   height: 100%;
 }
 
