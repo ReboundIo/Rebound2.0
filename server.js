@@ -196,7 +196,7 @@ function startServer() {
 
           if (config.admins.indexOf(username) > -1) {
             userList[username].privileges = "admin";
-            console.log(config.admins);
+            console.log(userList[username].privileges);
           } else {
             userList[username].privileges = "user";
           }
@@ -233,11 +233,11 @@ function startServer() {
       });
     });
 
-    socket.on('kick request', function(username, kickee) {
-      if (userList[username].privileges = "admin") {
+    socket.on('kick request', function(user, kickee) {
+      if (userList[user].privileges == "admin") {
         kick(kickee);
       } else {
-        alert("You must be an admin to use that.");
+        socket.emit('alert', "You must be an admin to use that.");
       }
     })
 
