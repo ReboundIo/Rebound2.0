@@ -238,6 +238,10 @@ function startServer() {
       } else {
         socket.emit('alert', "You must be an admin to use that.");
       }
+    });
+
+    socket.on('global message', function(message) {
+      socket.broadcast.emit('new message', message);
     })
 
     // when the client stops typing, tell everyone else

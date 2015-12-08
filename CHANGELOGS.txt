@@ -1,0 +1,5 @@
+v1.1 ~
+
+-- FEATURES
+- added /global command
+- allows users to send message globally to everyone, no matter the chat room they're in

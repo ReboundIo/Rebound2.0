@@ -72,6 +72,8 @@ $(function() {
         log("/color - shows list of available colors");
         log("/color <colorchoice> - changes your username color");
         log("/pm <username> <message> - sends a private message to a user");
+        log("/room <room name/number> - leaves your current room and joins a new one");
+        log("/global <message> - sends a message to everyone, no matter what chat room they're in");
       } else if (message.split(' ')[0] == "/kick") {
         socket.emit('kick request', username, message.split(' ')[1]);
       } else if (message.split(' ')[0] == "/pm") {
@@ -82,6 +84,8 @@ $(function() {
         for (i=0;i<999;i++) { privateMessageArray.replace(',', ' ') };
         socket.emit('send pm', username, message.split(' ')[1], privateMessageArray)
         log("You sent " + message.split(' ')[1] + ": " + privateMessageArray);
+      } else if (message.split(' ')[0] == "/global") {
+        socket.emit('global message', message);
       } else if (message == "/color") {
         log("The available colors are: maroon, red, orange, yellow, olive, green, purple, fuchsia, lime, teal, aqua, blue, navy, black, silver, gray, white.");
       } else if (message.split(' ')[0] == "/room") {
@@ -99,6 +103,8 @@ $(function() {
         log("note: compact is the default theme");
         log("compact");
         log("cozy");
+        log("fire");
+        log("party");
       } else if (message.split(' ').length == 2) {
         if (message.split(' ')[0] == "/theme") {
           if (message.split(' ')[1] == "compact") {
