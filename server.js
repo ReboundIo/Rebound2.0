@@ -178,6 +178,16 @@ function startServer() {
       }
     });
 
+    socket.on('global message', function(message) {
+      socket.broadcast.emit('new message', {
+
+        username: socket.username,
+        message: data,
+        color: socket.color
+
+      });
+    });
+
 
     // when a new user joins
     socket.on('add user', function (username, password) {
@@ -239,10 +249,6 @@ function startServer() {
         socket.emit('alert', "You must be an admin to use that.");
       }
     });
-
-    socket.on('global message', function(message) {
-      socket.broadcast.emit('new message', message);
-    })
 
     // when the client stops typing, tell everyone else
     socket.on('stop typing', function () {

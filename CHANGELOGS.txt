@@ -1,3 +1,8 @@
+v1.1.2 ~
+
+-- BUGFIXES
+- fixing /global
+
 v1.1 ~
 
 -- FEATURES
