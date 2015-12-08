@@ -281,10 +281,10 @@ $(function() {
 
   function removeUserFromRoster(username) {
 
-    if (userItems[username] != undefined || null) {
+    /*if (userItems[username] != undefined || null) {
       userRoster.removeChild(userItems[username]);
       currentRoster.splice(currentRoster.indexOf(username), 1);
-    }
+    }*/
 
   }
 
