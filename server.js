@@ -178,7 +178,7 @@ function startServer() {
       }
     });
 
-    socket.on('global message', function(message) {
+    socket.on('global message', function(data) {
       socket.broadcast.emit('new message', {
 
         username: socket.username,
